@@ -7,7 +7,7 @@ const JWT_SECRET = new TextEncoder().encode(
 
 const PUBLIC_PATHS = ['/', '/login', '/register', '/api/auth/login', '/api/auth/register']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const isPublic = PUBLIC_PATHS.some((p) => pathname === p || (p !== '/' && pathname.startsWith(p)))
