@@ -2,7 +2,7 @@ import { getSession } from '@/lib/auth'
 import { connectDB } from '@/lib/db/mongoose'
 import { TimeEntry } from '@/lib/db/models/TimeEntry'
 import { Goal } from '@/lib/db/models/Goal'
-import { formatDate, startOfDay, endOfDay, formatDuration } from '@/lib/utils/time'
+import { formatDate, startOfDay, endOfDay, formatDuration, startOfWeek } from '@/lib/utils/time'
 import { generateDailyInsights } from '@/lib/analytics/insights'
 import { getCategoryById } from '@/lib/utils/categories'
 import DashboardClient from './DashboardClient'
@@ -17,13 +17,25 @@ export default async function DashboardPage() {
   const todayStart = startOfDay(now)
   const todayEnd = endOfDay(now)
 
-  const [entries, goals] = await Promise.all([
+  const weekStart = startOfWeek(now)
+
+  const [entries, goals, weekEntries] = await Promise.all([
     TimeEntry.find({
       userId: session.userId,
       startTime: { $gte: todayStart, $lte: todayEnd },
     }).sort({ startTime: 1 }),
     Goal.find({ userId: session.userId, isActive: true }),
+    TimeEntry.find({
+      userId: session.userId,
+      startTime: { $gte: weekStart, $lte: todayEnd },
+      endTime: { $ne: null },
+    }),
   ])
+
+  const weekCatMap: Record<string, number> = {}
+  for (const e of weekEntries) {
+    weekCatMap[e.category] = (weekCatMap[e.category] ?? 0) + e.duration
+  }
 
   const completedEntries = entries.filter((e) => e.endTime !== null)
   const totalMinutes = completedEntries.reduce((s, e) => s + e.duration, 0)
@@ -55,7 +67,7 @@ export default async function DashboardPage() {
     targetHours: g.targetHours,
     category: g.category,
     period: g.period,
-    currentMinutes: catMap[g.category] ?? 0,
+    currentMinutes: g.period === 'weekly' ? (weekCatMap[g.category] ?? 0) : (catMap[g.category] ?? 0),
   }))
 
   // Serialise entries for client

@@ -8,6 +8,11 @@ export interface InsightResult {
   trend?: 'up' | 'down' | 'neutral'
 }
 
+export interface WeekContext {
+  dailyMinutes: number[]      // past N days totals, oldest first, NOT including today
+  dailyDistractions: number[] // past N days distraction mins, oldest first
+}
+
 function groupByHour(entries: ITimeEntry[]): Record<number, number> {
   const hourMap: Record<number, number> = {}
   for (const entry of entries) {
@@ -45,7 +50,7 @@ function hourLabel(h: number): string {
   return `${h - 12} PM`
 }
 
-export function generateDailyInsights(entries: ITimeEntry[]): InsightResult[] {
+export function generateDailyInsights(entries: ITimeEntry[], weekContext?: WeekContext): InsightResult[] {
   if (entries.length === 0) {
     return [
       {
@@ -130,6 +135,41 @@ export function generateDailyInsights(entries: ITimeEntry[]): InsightResult[] {
       metric: '1 category',
       trend: 'neutral',
     })
+  }
+
+  // Cross-day insights (requires week context with at least 2 prior days)
+  if (weekContext && weekContext.dailyMinutes.length >= 2 && totalMinutes > 0) {
+    const activeDays = weekContext.dailyMinutes.filter((m) => m > 0)
+    if (activeDays.length >= 2) {
+      const weekAvg = Math.round(activeDays.reduce((s, v) => s + v, 0) / activeDays.length)
+      const pct = Math.round(((totalMinutes - weekAvg) / weekAvg) * 100)
+      if (Math.abs(pct) >= 20) {
+        insights.push({
+          content: pct > 0
+            ? `You're tracking ${pct}% more than your recent daily average of ${formatDurationLong(weekAvg)}. Strong session.`
+            : `Today is ${Math.abs(pct)}% below your recent daily average of ${formatDurationLong(weekAvg)}.`,
+          metric: `${pct > 0 ? '+' : ''}${pct}% vs avg`,
+          trend: pct > 0 ? 'up' : 'down',
+        })
+      }
+    }
+
+    // Distraction trend — is it climbing over the last 3+ days?
+    if (weekContext.dailyMinutes.length >= 3) {
+      const recentMins = weekContext.dailyMinutes.slice(-3)
+      const recentDist = weekContext.dailyDistractions.slice(-3)
+      const recentRatios = recentMins.map((m, i) => (m > 0 ? recentDist[i] / m : 0))
+      const todayDistraction = (catMap['distraction'] ?? 0) + (catMap['social-media'] ?? 0)
+      const todayRatio = todayDistraction / totalMinutes
+      const allRising = recentRatios.every((r, i) => i === 0 || r >= recentRatios[i - 1])
+      if (allRising && todayRatio > recentRatios[recentRatios.length - 1] && todayRatio > 0.1) {
+        insights.push({
+          content: `Distraction time has been climbing for ${recentRatios.length + 1} days in a row. Consider scheduling dedicated focus blocks.`,
+          metric: 'distraction trend ↑',
+          trend: 'down',
+        })
+      }
+    }
   }
 
   return insights.slice(0, 3)

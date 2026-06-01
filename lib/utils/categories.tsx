@@ -144,6 +144,21 @@ export const CATEGORIES: Category[] = [
     isDistraction: true,
   },
   {
+    id: 'commuting',
+    label: 'Commuting',
+    color: '#60A5FA',
+    bgColor: 'rgba(96,165,250,0.15)',
+    icon: (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="3" width="15" height="13" rx="2"/>
+        <path d="M16 8h4l3 3v5h-7V8z"/>
+        <circle cx="5.5" cy="18.5" r="2.5"/>
+        <circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+    ),
+    isDistraction: false,
+  },
+  {
     id: 'other',
     label: 'Other',
     color: '#70A0A8',

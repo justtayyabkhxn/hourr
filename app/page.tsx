@@ -69,6 +69,7 @@ const CATS = [
   { label: 'Creative',   color: '#a685ff' },
   { label: 'Distraction',color: '#71717b' },
   { label: 'Sleep',      color: '#8b5cf6' },
+  { label: 'Commuting',  color: '#60A5FA' },
   { label: 'Other',      color: '#14b8a6' },
 ]
 
@@ -213,7 +214,7 @@ export default async function LandingPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-10 grid grid-cols-3 gap-4 sm:gap-8">
           {[
             { value: '24h', label: 'Full day timeline' },
-            { value: '10', label: 'Built-in categories' },
+            { value: '11', label: 'Built-in categories' },
             { value: '0', label: 'Ads or trackers' },
           ].map((s) => (
             <div key={s.label} className="text-center">

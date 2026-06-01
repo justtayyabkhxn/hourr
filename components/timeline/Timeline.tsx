@@ -26,7 +26,7 @@ function hourLabel(h: number) {
   return h < 12 ? `${h}am` : `${h - 12}pm`
 }
 
-export default function Timeline({ entries, currentTime = new Date() }: { entries: Entry[]; currentTime?: Date }) {
+export default function Timeline({ entries, currentTime = new Date(), hideNow }: { entries: Entry[]; currentTime?: Date; hideNow?: boolean }) {
   const [tooltip, setTooltip] = useState<{ entry: Entry; x: number; y: number } | null>(null)
 
   const nowPct = useMemo(() => toPercent(minsFromDate(currentTime)), [currentTime])
@@ -106,7 +106,7 @@ export default function Timeline({ entries, currentTime = new Date() }: { entrie
         })}
 
         {/* Now indicator */}
-        {nowPct >= 0 && nowPct <= 100 && (
+        {!hideNow && nowPct >= 0 && nowPct <= 100 && (
           <div
             className="absolute top-0 bottom-0 w-px z-10"
             style={{ left: `${nowPct}%`, background: 'var(--accent)', boxShadow: '0 0 8px rgba(124,58,237,0.8)' }}

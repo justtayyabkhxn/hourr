@@ -47,7 +47,7 @@ export default function GoalsClient({ goals: initialGoals }: { goals: Goal[] }) 
   return (
     <>
       {/* Action row */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-5 px-4 md:px-0">
         <p className="text-xs" style={{ color: 'var(--text-3)', fontWeight: 400 }}>
           Set time targets per category and track progress.
         </p>
@@ -171,7 +171,7 @@ export default function GoalsClient({ goals: initialGoals }: { goals: Goal[] }) 
 
       {/* Daily */}
       {daily.length > 0 && (
-        <div className="mb-5">
+        <div className="mb-5 px-4 md:px-0">
           <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text-3)' }}>Daily Goals</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {daily.map((g) => <GoalCard key={g._id} goal={g} currentMinutes={g.currentMinutes} />)}
@@ -181,7 +181,7 @@ export default function GoalsClient({ goals: initialGoals }: { goals: Goal[] }) 
 
       {/* Weekly */}
       {weekly.length > 0 && (
-        <div>
+        <div className="px-4 md:px-0">
           <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text-3)' }}>Weekly Goals</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {weekly.map((g) => <GoalCard key={g._id} goal={g} currentMinutes={g.currentMinutes} />)}

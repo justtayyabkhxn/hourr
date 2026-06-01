@@ -5,7 +5,7 @@ import Providers from '@/components/Providers'
 
 const mono = Noto_Sans_Mono({
   subsets: ['latin'],
-  weight: ['700'],
+  weight: ['400', '500', '700'],
   display: 'swap',
   variable: '--font-mono',
 })

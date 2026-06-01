@@ -15,6 +15,7 @@ interface TimerState {
   setEntryId: (id: string) => void
   tick: () => void
   reset: () => void
+  recoverTimer: (entryId: string, category: string, notes: string, startTime: Date) => void
 }
 
 export const useTimerStore = create<TimerState>((set, get) => ({
@@ -60,5 +61,15 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       notes: '',
       entryId: null,
       elapsed: 0,
+    }),
+
+  recoverTimer: (entryId, category, notes, startTime) =>
+    set({
+      isRunning: true,
+      startTime,
+      category,
+      notes,
+      entryId,
+      elapsed: Math.floor((Date.now() - startTime.getTime()) / 1000),
     }),
 }))

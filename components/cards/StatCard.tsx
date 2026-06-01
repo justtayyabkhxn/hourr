@@ -10,27 +10,15 @@ interface Props {
 const TREND = {
   up: {
     color: 'var(--success)',
-    icon: (
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="18 15 12 9 6 15"/>
-      </svg>
-    ),
+    label: '↑',
   },
   down: {
     color: 'var(--danger)',
-    icon: (
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="6 9 12 15 18 9"/>
-      </svg>
-    ),
+    label: '↓',
   },
   neutral: {
     color: 'var(--warning)',
-    icon: (
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="5" y1="12" x2="19" y2="12"/>
-      </svg>
-    ),
+    label: '→',
   },
 }
 
@@ -39,39 +27,54 @@ export default function StatCard({ label, value, sub, accent, trend, icon }: Pro
 
   return (
     <div
-      className="p-4 rounded-lg"
+      className="relative overflow-hidden p-5 rounded-xl"
       style={{
         background: 'var(--bg-card)',
         border: '1px solid var(--border)',
-        borderTop: accent ? `2px solid ${accent}` : '1px solid var(--border)',
-        boxShadow: accent ? `0 -1px 16px ${accent}14` : 'none',
+        borderTop: `2px solid ${accent ?? 'var(--border)'}`,
       }}
     >
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text-3)' }}>
-          {label}
-        </span>
-        {icon && (
-          <span style={{ color: accent ?? 'var(--text-3)', opacity: 0.45 }}>{icon}</span>
-        )}
-      </div>
+      {/* Accent gradient bleed */}
+      {accent && (
+        <div
+          className="absolute inset-x-0 top-0 h-20 pointer-events-none"
+          style={{ background: `linear-gradient(180deg, ${accent}0d 0%, transparent 100%)` }}
+        />
+      )}
 
-      <div className="text-3xl font-bold tracking-tight mb-2" style={{ color: 'var(--text-1)', lineHeight: 1 }}>
-        {value}
-      </div>
-
-      <div className="flex items-center gap-1.5">
-        {trendInfo && (
+      <div className="relative flex flex-col gap-3">
+        <div className="flex items-center justify-between">
           <span
-            className="flex items-center justify-center w-4 h-4 rounded"
-            style={{ color: trendInfo.color, background: `${trendInfo.color}18` }}
+            className="text-xs font-bold uppercase tracking-widest"
+            style={{ color: 'var(--text-3)', letterSpacing: '0.1em' }}
           >
-            {trendInfo.icon}
+            {label}
           </span>
-        )}
-        {sub && (
-          <span className="text-xs" style={{ color: 'var(--text-3)', fontWeight: 400 }}>{sub}</span>
-        )}
+          {icon && (
+            <span style={{ color: accent ?? 'var(--text-3)', opacity: 0.4 }}>{icon}</span>
+          )}
+        </div>
+
+        <div
+          className="font-bold tabular-nums leading-none"
+          style={{ color: 'var(--text-1)', fontSize: 'clamp(1.5rem, 3vw, 1.875rem)' }}
+        >
+          {value}
+        </div>
+
+        <div className="flex items-center gap-2">
+          {trendInfo && (
+            <span
+              className="text-xs font-bold px-1.5 py-0.5 rounded"
+              style={{ color: trendInfo.color, background: `${trendInfo.color}15`, letterSpacing: '0.04em' }}
+            >
+              {trendInfo.label}
+            </span>
+          )}
+          {sub && (
+            <span className="text-xs" style={{ color: 'var(--text-3)', fontWeight: 400 }}>{sub}</span>
+          )}
+        </div>
       </div>
     </div>
   )

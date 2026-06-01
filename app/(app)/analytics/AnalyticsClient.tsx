@@ -64,16 +64,16 @@ export default function AnalyticsClient({ byDay, byCategory, byHour, totalMinute
   return (
     <>
       {/* Period selector */}
-      <div className="flex items-center gap-2 mb-5">
+      <div className="flex items-center gap-1.5 mb-6 p-1 rounded-xl w-fit mx-4 md:mx-0" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
         {(['week', 'month'] as const).map((p) => (
           <button
             key={p}
             onClick={() => setPeriod(p)}
-            className="px-4 py-2 rounded text-xs font-bold uppercase tracking-widest transition-all"
+            className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all"
             style={{
-              background: period === p ? 'var(--accent-dim)' : 'var(--bg-elevated)',
-              border: period === p ? '1px solid rgba(0,187,127,0.25)' : '1px solid var(--border)',
-              color: period === p ? 'var(--accent)' : 'var(--text-3)',
+              background: period === p ? 'var(--accent)' : 'transparent',
+              color: period === p ? '#09090b' : 'var(--text-3)',
+              letterSpacing: '0.08em',
             }}
           >
             {p === 'week' ? 'This week' : 'This month'}
@@ -82,7 +82,7 @@ export default function AnalyticsClient({ byDay, byCategory, byHour, totalMinute
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4 px-4 md:px-0">
         <StatCard
           label="Total Tracked"
           value={fmtDur(d.totalMinutes)}
@@ -112,25 +112,19 @@ export default function AnalyticsClient({ byDay, byCategory, byHour, totalMinute
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-3">
-        <div className="col-span-1 md:col-span-3 p-4 rounded-lg" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-          <span className="text-xs font-bold uppercase tracking-widest mb-4 block" style={{ color: 'var(--text-3)' }}>
-            Time Trend
-          </span>
+        <div className="col-span-1 md:col-span-3 p-5 rounded-xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+          <span className="section-label mb-4 block">Time Trend</span>
           <TrendLine data={trendData} />
         </div>
-        <div className="col-span-1 md:col-span-2 p-4 rounded-lg" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-          <span className="text-xs font-bold uppercase tracking-widest mb-4 block" style={{ color: 'var(--text-3)' }}>
-            By Category
-          </span>
+        <div className="col-span-1 md:col-span-2 p-5 rounded-xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+          <span className="section-label mb-4 block">By Category</span>
           <CategoryPie data={d.byCategory} />
         </div>
       </div>
 
       {/* Hour heatmap */}
-      <div className="p-4 rounded-lg" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-        <span className="text-xs font-bold uppercase tracking-widest mb-4 block" style={{ color: 'var(--text-3)' }}>
-          Activity by Hour
-        </span>
+      <div className="p-5 rounded-xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+        <span className="section-label mb-4 block">Activity by Hour</span>
         <TrendLine data={hourData} color="var(--accent)" />
       </div>
     </>

@@ -33,30 +33,29 @@ export default function GoalCard({ goal, currentMinutes }: Props) {
   const remaining = targetMinutes - currentMinutes
   const h = Math.floor(Math.abs(remaining) / 60)
   const m = Math.round(Math.abs(remaining) % 60)
-  const remainLabel = done ? 'Done' : `${h > 0 ? `${h}h ` : ''}${m}m left`
+  const remainLabel = done ? 'Complete' : `${h > 0 ? `${h}h ` : ''}${m}m left`
 
   return (
     <div
-      className="p-4 rounded-lg transition-all"
+      className="p-4 rounded-xl transition-all"
       style={{
-        background: 'var(--bg-card)',
-        border: hover ? '1px solid var(--border)' : '1px solid var(--border-soft)',
+        background: done ? `${cat.color}08` : 'var(--bg-elevated)',
+        border: `1px solid ${done ? cat.color + '30' : 'var(--border-soft)'}`,
+        transition: 'all 0.15s',
       }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
-          <div className="text-xs font-bold uppercase tracking-widest truncate mb-0.5" style={{ color: 'var(--text-1)' }}>
+          <div className="text-xs font-bold uppercase tracking-widest truncate mb-1" style={{ color: done ? cat.color : 'var(--text-1)' }}>
             {goal.title}
           </div>
-          <div className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--text-3)', fontWeight: 400 }}>
+          <div className="flex items-center gap-1.5" style={{ color: 'var(--text-3)' }}>
             <span style={{ display: 'flex', alignItems: 'center', color: cat.color }}>{cat.icon}</span>
-            <span>{cat.label}</span>
+            <span className="text-xs" style={{ fontWeight: 400 }}>{cat.label}</span>
             <span style={{ color: 'var(--border)' }}>·</span>
-            <span>{goal.period}</span>
-            <span style={{ color: 'var(--border)' }}>·</span>
-            <span>{goal.targetHours}h</span>
+            <span className="text-xs capitalize" style={{ fontWeight: 400 }}>{goal.period}</span>
           </div>
         </div>
         <button
@@ -64,34 +63,40 @@ export default function GoalCard({ goal, currentMinutes }: Props) {
           className="w-6 h-6 rounded flex items-center justify-center text-xs transition-all ml-2 shrink-0"
           style={{
             color: 'var(--text-3)',
-            opacity: hover ? 1 : 0.3,
-            background: hover ? 'var(--bg-elevated)' : 'transparent',
+            opacity: hover ? 1 : 0,
+            background: hover ? 'var(--bg-card)' : 'transparent',
+            border: hover ? '1px solid var(--border)' : '1px solid transparent',
           }}
-          title="Delete"
+          title="Delete goal"
         >
           ×
         </button>
       </div>
 
       {/* Progress bar */}
-      <div className="h-1.5 rounded-full overflow-hidden mb-2" style={{ background: 'var(--bg-input)' }}>
+      <div className="h-2 rounded-full overflow-hidden mb-2.5" style={{ background: 'var(--bg-card)' }}>
         <div
           className="h-full rounded-full transition-all duration-700"
           style={{
             width: `${progress}%`,
-            background: done ? 'var(--success)' : cat.color,
-            boxShadow: done ? '0 0 6px var(--success)' : `0 0 6px ${cat.color}80`,
+            background: done
+              ? `linear-gradient(90deg, ${cat.color}, ${cat.color}cc)`
+              : cat.color,
+            boxShadow: `0 0 8px ${cat.color}60`,
           }}
         />
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold" style={{ color: done ? 'var(--success)' : cat.color }}>
+        <span className="text-xs font-bold tabular-nums" style={{ color: done ? cat.color : 'var(--text-2)' }}>
           {Math.round(progress)}%
         </span>
-        <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-widest" style={{ color: done ? 'var(--success)' : 'var(--text-3)' }}>
+        <span
+          className="flex items-center gap-1 text-xs font-bold"
+          style={{ color: done ? cat.color : 'var(--text-3)' }}
+        >
           {done && (
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           )}
